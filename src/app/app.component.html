@@ -1,0 +1,115 @@
+<div class="app-container">
+  <!-- Header -->
+  <header class="header">
+    <h1>{{ obtenerSaludo() }}</h1>
+    <button class="icon-button" (click)="cargarNotas()">
+      <span class="material-icons">refresh</span>
+    </button>
+  </header>
+
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading-container">
+    <div class="spinner"></div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!cargando && notas.length === 0" class="empty-state">
+    <p>No hay notas aún<br>¡Envía la primera! 💕</p>
+  </div>
+
+  <!-- Lista de Notas -->
+  <div *ngIf="!cargando && notas.length > 0" class="notas-container">
+    <div 
+      *ngFor="let nota of notas" 
+      class="nota-card"
+      [style.background-color]="nota.color">
+      
+      <!-- Imagen -->
+      <img 
+        *ngIf="nota.tiene_imagen && nota.imagen_url"
+        [src]="apiUrl + nota.imagen_url"
+        class="nota-imagen"
+        (click)="abrirImagenCompleta(nota.imagen_url!)"
+        alt="Imagen de nota">
+
+      <!-- Contenido -->
+      <div class="nota-content">
+        <p class="nota-mensaje">{{ nota.mensaje }}</p>
+        <div class="nota-footer">
+          <span class="nota-fecha">{{ nota.fecha }}</span>
+          <button class="delete-button" (click)="eliminarNota(nota.id)">
+            <span class="material-icons">delete</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB Button -->
+  <button class="fab" (click)="abrirDialogoNuevaNota()">
+    <span class="material-icons">add</span>
+  </button>
+
+  <!-- Dialog Nueva Nota -->
+  <div *ngIf="mostrarDialog" class="dialog-overlay" (click)="cerrarDialog()">
+    <div class="dialog-content" (click)="$event.stopPropagation()">
+      <h2>Nueva Nota</h2>
+      
+      <!-- Campo de texto -->
+      <textarea 
+        [(ngModel)]="nuevoMensaje"
+        placeholder="Escribe tu mensaje..."
+        rows="3"
+        class="textarea"></textarea>
+
+      <!-- Selector de colores -->
+      <div class="color-section">
+        <p class="color-label">Elige un color:</p>
+        <div class="color-grid">
+          <div 
+            *ngFor="let colorInfo of coloresDisponibles"
+            class="color-option"
+            [style.background-color]="colorInfo.color"
+            [class.selected]="colorSeleccionado === colorInfo.hex"
+            (click)="seleccionarColor(colorInfo.hex)">
+            <span *ngIf="colorSeleccionado === colorInfo.hex" class="material-icons check-icon">check</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview de imagen -->
+      <div *ngIf="imagenPreview" class="image-preview">
+        <img [src]="imagenPreview" alt="Preview">
+        <button class="text-button" (click)="quitarImagen()">Quitar foto</button>
+      </div>
+
+      <!-- Botón adjuntar foto -->
+      <div *ngIf="!imagenPreview" class="attach-button-container">
+        <input 
+          type="file" 
+          #fileInput 
+          accept="image/*" 
+          (change)="onFileSelected($event)"
+          style="display: none">
+        <button class="outlined-button" (click)="fileInput.click()">
+          <span class="material-icons">image</span>
+          Adjuntar foto
+        </button>
+      </div>
+
+      <!-- Actions -->
+      <div class="dialog-actions">
+        <button class="text-button" (click)="cerrarDialog()">Cancelar</button>
+        <button class="filled-button" (click)="enviarNota()">Enviar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pantalla Imagen Completa -->
+  <div *ngIf="mostrarImagenCompleta" class="fullscreen-image-overlay" (click)="cerrarImagenCompleta()">
+    <button class="close-button" (click)="cerrarImagenCompleta()">
+      <span class="material-icons">close</span>
+    </button>
+    <img [src]="imagenCompletaUrl" alt="Imagen completa" class="fullscreen-image">
+  </div>
+</div>
