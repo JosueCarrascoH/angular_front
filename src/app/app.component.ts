@@ -39,6 +39,9 @@ export class AppComponent implements OnInit {
   mostrarImagenCompleta = false;
   imagenCompletaUrl = '';
 
+  mostrarDialogoEliminar = false;
+  idNotaAEliminar: number | null = null;
+
   coloresDisponibles: ColorInfo[] = [
     { nombre: 'Rosa', color: '#FFEBEE', hex: '#FFEBEE' },
     { nombre: 'Morado', color: '#F3E5F5', hex: '#F3E5F5' },
@@ -123,18 +126,35 @@ export class AppComponent implements OnInit {
   }
 
   eliminarNota(id: number): void {
-    console.log('🔵 [DELETE] Eliminando nota ID:', id);
+    // En lugar de llamar a http.delete aquí, guardamos el ID y abrimos el modal
+    console.log('🔵 Solicitando eliminación de nota ID:', id);
+    this.idNotaAEliminar = id;
+    this.mostrarDialogoEliminar = true;
+  }
+
+  confirmarEliminacion(): void {
+    if (this.idNotaAEliminar === null) return;
+
+    const id = this.idNotaAEliminar;
+    console.log('🔵 [DELETE] Confirmado. Eliminando nota ID:', id);
 
     this.http.delete(`${this.apiUrl}/notas/${id}`).subscribe({
       next: (response) => {
         console.log('✅ [DELETE] Nota eliminada exitosamente');
         this.cargarNotas();
+        this.cerrarDialogoEliminar(); // Cerramos el modal
       },
       error: (error) => {
         console.error('❌ [DELETE] Error:', error);
         this.mostrarError('Error al eliminar nota: ' + error.message);
+        this.cerrarDialogoEliminar();
       }
     });
+  }
+
+  cerrarDialogoEliminar(): void {
+    this.mostrarDialogoEliminar = false;
+    this.idNotaAEliminar = null;
   }
 
   abrirDialogoNuevaNota(): void {

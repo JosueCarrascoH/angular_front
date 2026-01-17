@@ -54,6 +54,35 @@
   padding: 60px 20px;
 }
 
+.dialog-pequeno {
+  max-width: 400px;
+  text-align: center;
+}
+
+.mensaje-amor-container {
+  margin: 24px 0;
+  padding: 16px;
+  background-color: #FFF0F5; /* Un rosa muy clarito */
+  border-radius: 12px;
+  border: 1px dashed #ec407a;
+}
+
+.mensaje-amor {
+  font-size: 18px;
+  color: #ec407a;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Botón de eliminar específico */
+.boton-eliminar {
+  background-color: #ef5350; /* Rojo suave */
+}
+
+.boton-eliminar:hover {
+  background-color: #d32f2f;
+}
+
 .spinner {
   border: 3px solid #f3f3f3;
   border-top: 3px solid #ec407a;
